@@ -10,7 +10,6 @@ from tqdm import tqdm
 import random
 
 """
-
 This module can be used to download datasat and encode images
 
 """

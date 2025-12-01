@@ -13,7 +13,7 @@
             padding-top: 2rem;
         }
         .container {
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
             background-color: white;
             border-radius: 10px;
@@ -54,6 +54,37 @@
             margin-top: 2rem;
             display: none;
         }
+        .result-layout {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+        .result-left {
+            flex: 1;
+            min-width: 0;
+        }
+        .result-right {
+            flex: 1;
+            min-width: 300px;
+        }
+        .result-image-container {
+            margin-bottom: 1.5rem;
+        }
+        .result-image {
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        @media (max-width: 768px) {
+            .result-layout {
+                flex-direction: column;
+            }
+            .result-right {
+                min-width: 100%;
+            }
+        }
         .loading {
             display: none;
             text-align: center;
@@ -75,13 +106,64 @@
             margin-top: 1rem;
             border-radius: 5px;
         }
+        .weather-box {
+            background-color: #e7f3ff;
+            border-left: 4px solid #17a2b8;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 5px;
+        }
+        .weather-label {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #17a2b8;
+            margin-bottom: 0.5rem;
+        }
+        .weather-confidence {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 0.75rem;
+        }
+        .weather-scores {
+            margin-top: 0.75rem;
+        }
+        .weather-score-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.25rem 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .weather-score-item:last-child {
+            border-bottom: none;
+        }
+        .weather-score-label {
+            font-weight: 500;
+        }
+        .weather-score-bar {
+            flex: 1;
+            height: 8px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            margin: 0 1rem;
+            overflow: hidden;
+        }
+        .weather-score-bar-fill {
+            height: 100%;
+            background-color: #17a2b8;
+            transition: width 0.3s ease;
+        }
+        .weather-score-value {
+            font-weight: 600;
+            min-width: 50px;
+            text-align: right;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>Image Caption Generator</h1>
-            <p class="text-muted">Upload an image and get an AI-generated caption</p>
+            <h1>Image Caption Generator and Weather Classification</h1>
+            <p class="text-muted">Upload an image to get AI-generated caption and weather classification(Copy Right by Siyuan Jing & Haonan Wu)</p>
         </div>
 
         <div class="upload-container" id="uploadContainer">
@@ -108,15 +190,33 @@
             <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
-            <p class="mt-3">Generating caption... This may take a minute.</p>
+            <p class="mt-3">Processing image... Generating caption and classifying weather. This may take a minute.</p>
         </div>
 
         <div class="error-message" id="errorMessage"></div>
 
         <div class="result-container" id="resultContainer">
-            <h4>Generated Caption:</h4>
-            <div class="caption-box">
-                <p id="caption"></p>
+            <h4 class="mb-3">Analysis Results</h4>
+            <div class="result-layout">
+                <div class="result-left">
+                    <div class="result-image-container">
+                        <img id="resultImage" src="" alt="Uploaded image" class="result-image" style="display: none;">
+                    </div>
+                    <h5>Generated Caption:</h5>
+                    <div class="caption-box">
+                        <p id="caption"></p>
+                    </div>
+                </div>
+                <div class="result-right">
+                    <h5>Weather Classification:</h5>
+                    <div class="weather-box" id="weatherBox">
+                        <div class="weather-label" id="weatherLabel">-</div>
+                        <div class="weather-confidence" id="weatherConfidence">Confidence: -</div>
+                        <div class="weather-scores" id="weatherScores">
+                            <!-- Weather scores will be inserted here -->
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -135,6 +235,11 @@
             const resultContainer = document.getElementById('resultContainer');
             const captionElement = document.getElementById('caption');
             const errorMessage = document.getElementById('errorMessage');
+            const weatherBox = document.getElementById('weatherBox');
+            const weatherLabel = document.getElementById('weatherLabel');
+            const weatherConfidence = document.getElementById('weatherConfidence');
+            const weatherScores = document.getElementById('weatherScores');
+            const resultImage = document.getElementById('resultImage');
 
             browseButton.addEventListener('click', function() {
                 fileInput.click();
@@ -201,6 +306,7 @@
 
                 resultContainer.style.display = 'none';
                 errorMessage.style.display = 'none';
+                resultImage.style.display = 'none';
                 uploadFile(file);
             }
             
@@ -210,6 +316,7 @@
                 imagePreviewContainer.style.display = 'none';
                 resultContainer.style.display = 'none';
                 errorMessage.style.display = 'none';
+                resultImage.style.display = 'none';
             }
             
             clearButton.addEventListener('click', clearImage);
@@ -238,8 +345,58 @@
                 .then(data => {
                     loading.style.display = 'none';
 
+                    // Display image in result container
+                    if (preview.src) {
+                        resultImage.src = preview.src;
+                        resultImage.style.display = 'block';
+                    }
+                    
+                    // Display enhanced caption
                     captionElement.textContent = data.caption;
+                    
+                    // Display weather classification
+                    if (data.weather && data.weather.success) {
+                        const weather = data.weather;
+                        weatherLabel.textContent = `Weather: ${weather.weather}`;
+                        weatherConfidence.textContent = `Confidence: ${(weather.confidence * 100).toFixed(1)}%`;
+                        
+                        // Display all weather scores
+                        weatherScores.innerHTML = '';
+                        if (weather.all_scores) {
+                            Object.entries(weather.all_scores).forEach(([label, score]) => {
+                                const scoreItem = document.createElement('div');
+                                scoreItem.className = 'weather-score-item';
+                                
+                                const scoreLabel = document.createElement('span');
+                                scoreLabel.className = 'weather-score-label';
+                                scoreLabel.textContent = label;
+                                
+                                const scoreBar = document.createElement('div');
+                                scoreBar.className = 'weather-score-bar';
+                                
+                                const scoreBarFill = document.createElement('div');
+                                scoreBarFill.className = 'weather-score-bar-fill';
+                                scoreBarFill.style.width = `${score * 100}%`;
+                                scoreBar.appendChild(scoreBarFill);
+                                
+                                const scoreValue = document.createElement('span');
+                                scoreValue.className = 'weather-score-value';
+                                scoreValue.textContent = `${(score * 100).toFixed(1)}%`;
+                                
+                                scoreItem.appendChild(scoreLabel);
+                                scoreItem.appendChild(scoreBar);
+                                scoreItem.appendChild(scoreValue);
+                                weatherScores.appendChild(scoreItem);
+                            });
+                        }
+                        weatherBox.style.display = 'block';
+                    } else {
+                        weatherBox.style.display = 'none';
+                    }
+                    
                     resultContainer.style.display = 'block';
+                    // Hide upload container preview when showing results
+                    imagePreviewContainer.style.display = 'none';
                 })
                 .catch(error => {
                     loading.style.display = 'none';

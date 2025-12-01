@@ -1,0 +1,87 @@
+{
+  "images": [
+    {
+      "image": "1B.jpg",
+      "caption": "A street scene with a stop sign and a bicycle path sign.",
+      "enhanced_caption": "A street scene with a stop sign and a bicycle path sign on a sunny day.",
+      "weather": "Sunny",
+      "confidence": 0.4660630226135254,
+      "all_weather_scores": {
+        "Sunny": 0.4660630226135254,
+        "Clear": 0.4523945748806,
+        "Overcast": 0.06398989260196686,
+        "Cloudy": 0.01262145210057497,
+        "Rainy": 0.0022442813497036695,
+        "Stormy": 0.0013546310365200043,
+        "Snowy": 0.0012138481251895428,
+        "Foggy": 0.00011823411477962509
+      }
+    },
+    {
+      "image": "B4.jpg",
+      "caption": "A table topped with a tray of food and a hot dog.",
+      "enhanced_caption": "A table topped with a tray of food and a hot dog during a storm.",
+      "weather": "Stormy",
+      "confidence": 0.3381798565387726,
+      "all_weather_scores": {
+        "Stormy": 0.3381798565387726,
+        "Overcast": 0.22878684103488922,
+        "Rainy": 0.13218002021312714,
+        "Cloudy": 0.1131516844034195,
+        "Snowy": 0.0812770277261734,
+        "Sunny": 0.07181035727262497,
+        "Clear": 0.03203066810965538,
+        "Foggy": 0.0025835277047008276
+      }
+    },
+    {
+      "image": "B3.jpg",
+      "caption": "A cup of coffee sits on a wooden table.",
+      "enhanced_caption": "A cup of coffee sits on a wooden table under overcast skies.",
+      "weather": "Overcast",
+      "confidence": 0.5220889449119568,
+      "all_weather_scores": {
+        "Overcast": 0.5220889449119568,
+        "Sunny": 0.12723863124847412,
+        "Foggy": 0.11482035368680954,
+        "Cloudy": 0.09790246188640594,
+        "Rainy": 0.06302446126937866,
+        "Snowy": 0.03396284952759743,
+        "Clear": 0.02556448243558407,
+        "Stormy": 0.015397834591567516
+      }
+    },
+    {
+      "image": "B2.jpg",
+      "caption": "A bicycle is parked on a city street.",
+      "enhanced_caption": "A bicycle is parked on a city street on a sunny day.",
+      "weather": "Sunny",
+      "confidence": 0.41394758224487305,
+      "all_weather_scores": {
+        "Sunny": 0.41394758224487305,
+        "Clear": 0.32789885997772217,
+        "Cloudy": 0.07787033170461655,
+        "Overcast": 0.07702773064374924,
+        "Snowy": 0.07266249507665634,
+        "Rainy": 0.012301314622163773,
+        "Foggy": 0.01075045671314001,
+        "Stormy": 0.007541187573224306
+      }
+    }
+  ],
+  "weather_accuracy": 0.0,
+  "caption_metrics": {},
+  "weather_confidence_scores": [
+    0.4660630226135254,
+    0.3381798565387726,
+    0.5220889449119568,
+    0.41394758224487305
+  ],
+  "weather_distribution": {
+    "Sunny": 2,
+    "Stormy": 1,
+    "Overcast": 1
+  },
+  "average_confidence": 0.43506985157728195,
+  "std_confidence": 0.0677619374279984
+}
